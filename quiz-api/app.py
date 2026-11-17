@@ -38,7 +38,12 @@ def create_question():
 		return {"message": "Unauthorized"}, 401
 
 	json = request.get_json()
-	question = Question(title=json['title'])
+ 
+	question = Question(title=json['title'], position=json['position'])
+	for answer in json['possibleAnswers']:
+		question.add_answer(answer['text'], answer['isCorrect'])
+ 
+ 
 	question.save_to_db()
  
 	return {"message": "Question created successfully"}, 201
