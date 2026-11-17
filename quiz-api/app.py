@@ -1,7 +1,7 @@
 import hashlib
 
 from flask_cors import CORS
-from flask import Flask, request
+from flask import Flask, request, make_response
 import hashlib
 from jwt_utils import build_token
 from question import Question
@@ -19,6 +19,16 @@ def hello_world():
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
 	return {"size": 0, "scores": []}, 200
+
+@app.route('/questions/<id>', methods=['GET'])
+def GetQuestion(id):
+	response = make_response({"id": id}, 200)
+	response.headers['Content-Type'] = 'application/json'
+	payload = request.get_json()
+	print(payload)
+	print(id)
+	return response
+	# return {"id": id}, 200
 
 @app.route('/login', methods=['POST'])
 def Login():
