@@ -6,6 +6,7 @@ import hashlib
 from jwt_utils import build_token
 from question import Question
 from database import reset_database
+from Participation import Participation
 
 app = Flask(__name__)
 CORS(app)
@@ -86,6 +87,23 @@ def delete_all_participations():
 		return {"message": "Unauthorized"}, 401
  
 	return {"message": "Not implemented"}, 501
+
+
+@app.route('/participations', methods=['POST'])
+def create_participation():
+	json = request.get_json()
+ 
+	name = json['playerName']
+	responses = json['answers']
+ 
+	participation = Participation(name=name, responses=responses)
+ 
+	if not participation.is_valid():
+		return {"message": "Invalid"}, 400
+ 
+	participation.save_to_db()
+ 
+	return {"message": "Participation created successfully"}, 201
 
 @app.route('/rebuild-db', methods=['POST'])
 def RebuildDB():
