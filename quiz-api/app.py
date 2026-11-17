@@ -7,11 +7,26 @@ from jwt_utils import build_token
 from question import Question
 from database import reset_database
 from Participation import Participation
+from database import get_connection
 
 app = Flask(__name__)
 CORS(app)
 
 password = b"_M\xcc;Z\xa7e\xd6\x1d\x83'\xde\xb8\x82\xcf\x99"
+
+def get_quiz_size():
+	db_connection = get_connection()
+	cur = db_connection.cursor()
+	cur.execute("select count(*) from Question")
+	result = cur.fetchone()
+	return result[0]
+
+def get_scores():
+	db_connection = get_connection()
+	cur = db_connection.cursor()
+	cur.execute("select name, score from Participation")
+	result = cur.fetchall()
+	return [{"playerName": row[0], "score": row[1]} for row in result]
 
 @app.route('/')
 def hello_world():
@@ -20,7 +35,7 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+	return {"size": get_quiz_size(), "scores": get_scores()}, 200
 
 @app.route('/login', methods=['POST'])
 def Login():
