@@ -1,4 +1,5 @@
 from database import get_connection
+from quiz import get_quiz_size
 
 class Participation():
     
@@ -6,8 +7,8 @@ class Participation():
         self.name = name
         self.responses = responses
         
-    def is_valid(self):
-        return True
+    def is_valid(self) -> bool:
+        return len(self.responses) == get_quiz_size()
     
     def calculate_score(self):
         return 0
