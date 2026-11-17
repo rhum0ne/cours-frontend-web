@@ -23,19 +23,18 @@ def GetQuizInfo():
 
 @app.route('/questions/<int:id>', methods=['GET'])
 def GetQuestion(id):
-	response = make_response()
-	response.headers['Content-Type'] = 'application/json'
 
 	question = Question.get_by_id(id)
-	response.data = {
+	data = {
 		"id": 0 if not question else id,
 		"title": "" if not question else question.title,
 		"position": 0 if not question else question.position,
 		"text": "" if not question else question.text,
 		"image": "" if not question else question.image, # TODO: add image support
-	}		
+		"possibleAnswers": [] if not question else question.answers
+	}
 
-	return response, 200
+	return data, 200
 
 @app.route('/login', methods=['POST'])
 def Login():
@@ -58,7 +57,7 @@ def create_question():
 
 	json = request.get_json()
  
-	question = Question(title=json['title'], position=json['position'])
+	question = Question(title=json['title'], position=json['position'], text=json['text'], image=json['image'])
 	for answer in json['possibleAnswers']:
 		question.add_answer(answer['text'], answer['isCorrect'])
  
