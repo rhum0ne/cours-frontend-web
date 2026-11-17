@@ -69,6 +69,24 @@ def delete_question(question_id):
  
 	return {"message": "Not implemented"}, 501
 
+@app.route('/questions/all', methods=['DELETE'])
+def delete_all_questions():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+@app.route('/participations/all', methods=['DELETE'])
+def delete_all_participations():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
 @app.route('/rebuild-db', methods=['POST'])
 def RebuildDB():
 	auth = request.headers.get('Authorization')
