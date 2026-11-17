@@ -13,12 +13,16 @@ def reset_database():
     # drop the tables if they exist
     cur.execute("drop table if exists QuestionAnswer")
     cur.execute("drop table if exists Question")
+    cur.execute("drop table if exists Participation")
 
     # create the tables
     cur.execute(
         "create table Question (id integer primary key autoincrement, title text, text text, position integer, image text)")
     cur.execute(
         "create table QuestionAnswer (id integer primary key autoincrement, question integer, text text, is_correct boolean)")
+    cur.execute(
+        "create table Participation (id integer primary key autoincrement, name text, score integer)"
+    )
 
 def get_connection() -> sqlite3.Connection:
     return create_connection()

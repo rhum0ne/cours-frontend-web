@@ -6,6 +6,8 @@ import hashlib
 from jwt_utils import build_token
 from question import Question
 from database import reset_database
+from Participation import Participation
+from quiz import get_quiz_size, get_scores
 
 app = Flask(__name__)
 CORS(app)
@@ -19,7 +21,7 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+	return {"size": get_quiz_size(), "scores": get_scores()}, 200
 
 @app.route('/questions/<int:id>', methods=['GET'])
 def GetQuestion(id):
@@ -65,6 +67,59 @@ def create_question():
 	question.save_to_db()
  
 	return {"message": "Question created successfully"}, 201
+
+@app.route('/questions/<int:question_id>', methods=['PUT'])
+def update_question(question_id):
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+@app.route('/questions/<int:question_id>', methods=['DELETE'])
+def delete_question(question_id):
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+@app.route('/questions/all', methods=['DELETE'])
+def delete_all_questions():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+@app.route('/participations/all', methods=['DELETE'])
+def delete_all_participations():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+
+@app.route('/participations', methods=['POST'])
+def create_participation():
+	json = request.get_json()
+ 
+	name = json['playerName']
+	responses = json['answers']
+ 
+	participation = Participation(name=name, responses=responses)
+ 
+	if not participation.is_valid():
+		return {"message": "Invalid answers size"}, 400
+ 
+	participation.save_to_db()
+ 
+	return {"message": "Participation created successfully"}, 201
 
 @app.route('/rebuild-db', methods=['POST'])
 def RebuildDB():
