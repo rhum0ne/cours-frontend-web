@@ -51,6 +51,24 @@ def create_question():
  
 	return {"message": "Question created successfully"}, 201
 
+@app.route('/questions/<int:question_id>', methods=['PUT'])
+def update_question(question_id):
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
+@app.route('/questions/<int:question_id>', methods=['DELETE'])
+def delete_question(question_id):
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+ 
+	return {"message": "Not implemented"}, 501
+
 @app.route('/rebuild-db', methods=['POST'])
 def RebuildDB():
 	auth = request.headers.get('Authorization')
