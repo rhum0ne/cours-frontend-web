@@ -2,6 +2,7 @@ from flask_cors import CORS
 from flask import Flask, request
 import hashlib
 from jwt_utils import build_token
+from question import Question
 
 app = Flask(__name__)
 CORS(app)
@@ -28,6 +29,19 @@ def Login():
         return {"message": "Unauthorized"}, 401
     
     return {"token": build_token()}, 200
+
+@app.route('/questions', methods=['POST'])
+def create_question():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+
+	json = request.get_json()
+	question = Question(title=json['title'])
+	question.save_to_db()
+ 
+	return {"message": "Question created successfully"}, 201
 
 if __name__ == "__main__":
     app.run()
