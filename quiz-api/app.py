@@ -4,13 +4,19 @@ from flask_cors import CORS
 from flask import Flask, request, make_response
 import hashlib
 from jwt_utils import build_token
-from question import Question
+from entities.question import Question
 from database import reset_database
 from Participation import Participation
 from quiz import get_quiz_size, get_scores
 
+from repositories.questionRepository import QuestionRepository
+from database import get_connection
+
+
 app = Flask(__name__)
 CORS(app)
+
+question_repository = QuestionRepository()
 
 password = b"_M\xcc;Z\xa7e\xd6\x1d\x83'\xde\xb8\x82\xcf\x99"
 
@@ -30,14 +36,18 @@ def GetQuestion(id):
 	if not auth:
 		return {"message": "Unauthorized"}, 401
 
-	question = Question.get_by_id(id)
+	question = question_repository.find_by_id(id)
+
+	if not question:
+		return {"message": "Question not found"}, 404
+	
 	data = {
-		"id": 0 if not question else id,
-		"title": "" if not question else question.title,
-		"position": 0 if not question else question.position,
-		"text": "" if not question else question.text,
-		"image": "" if not question else question.image, # TODO: add image support
-		"possibleAnswers": [] if not question else question.answers
+		"id": question.id,
+		"title": question.title,
+		"position": question.position,
+		"text": question.text,
+		"image": question.image,
+		"possibleAnswers": question.answers
 	}
 
 	return data, 200
@@ -68,9 +78,12 @@ def create_question():
 		question.add_answer(answer['text'], answer['isCorrect'])
  
  
-	question.save_to_db()
- 
-	return {"message": "Question created successfully"}, 201
+	question = question_repository.save(question)
+
+	print(f"Question created with id: {question.id}")
+	return {
+		"id": question.id
+		}, 200
 
 @app.route('/questions/<int:question_id>', methods=['PUT'])
 def update_question(question_id):

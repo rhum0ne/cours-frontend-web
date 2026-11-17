@@ -1,31 +1,27 @@
 from database import get_connection
+from entities.question import Question
 
-class Question():
-    
-    def __init__(self, title: str, position: int):
-        self.title = title
-        self.position = position
-        self.answers = []
-        self.text = ""
-        self.image = ""
-        
-    def add_answer(self, text: str, is_correct: bool):
-        self.answers.append({"text": text, "isCorrect": is_correct})
-        
-    def save_to_db(self):
-        db_connection = get_connection()
-        cur = db_connection.cursor()
+
+class QuestionRepository:
+    def __init__(self):
+        pass
+        # self.connection = connection
+
+    def save(self, question) -> Question:
+        cn = get_connection()
+        cur = cn.cursor()
 
         # start transaction
         cur.execute("begin")
 
         # save the question to db
         insertion_result = cur.execute(
-            f"insert into Question (title, position) values (?, ?)", (self.title, self.position))
+            f"insert into Question (title, position, text, image) values (?, ?, ?, ?)", (question.title, question.position, question.text, question.image))
         
         id = cur.lastrowid
+        question.id = id
         
-        for answer in self.answers:
+        for answer in question.answers:
             cur.execute(
                 f"insert into QuestionAnswer (question, text, is_correct) values (?, ?, ?)", (id, answer['text'], answer['isCorrect']))
 
@@ -34,10 +30,11 @@ class Question():
 
         # in case of exception, rollback the transaction
         #cur.execute('rollback')
+        return question
     
-    def get_by_id(id: int):
-        db_connection = get_connection()
-        cur = db_connection.cursor()
+    def find_by_id(self, id: int) -> Question:
+        cn = get_connection()
+        cur = cn.cursor()
 
         # get the question from db
         cur.execute(
