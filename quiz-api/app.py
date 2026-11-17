@@ -25,6 +25,10 @@ def GetQuizInfo():
 
 @app.route('/questions/<int:id>', methods=['GET'])
 def GetQuestion(id):
+	auth = request.headers.get('Authorization')
+	 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
 
 	question = Question.get_by_id(id)
 	data = {
