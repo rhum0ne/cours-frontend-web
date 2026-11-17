@@ -21,15 +21,21 @@ def hello_world():
 def GetQuizInfo():
 	return {"size": 0, "scores": []}, 200
 
-@app.route('/questions/<id>', methods=['GET'])
+@app.route('/questions/<int:id>', methods=['GET'])
 def GetQuestion(id):
-	response = make_response({"id": id}, 200)
+	response = make_response()
 	response.headers['Content-Type'] = 'application/json'
-	payload = request.get_json()
-	print(payload)
-	print(id)
-	return response
-	# return {"id": id}, 200
+
+	question = Question.get_by_id(id)
+	response.data = {
+		"id": 0 if not question else id,
+		"title": "" if not question else question.title,
+		"position": 0 if not question else question.position,
+		"text": "" if not question else question.text,
+		"image": "" if not question else question.image, # TODO: add image support
+	}		
+
+	return response, 200
 
 @app.route('/login', methods=['POST'])
 def Login():

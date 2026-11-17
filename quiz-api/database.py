@@ -16,7 +16,7 @@ def reset_database():
 
     # create the tables
     cur.execute(
-        "create table Question (id integer primary key autoincrement, title text, position integer)")
+        "create table Question (id integer primary key autoincrement, title text, text text, position integer, image text)")
     cur.execute(
         "create table QuestionAnswer (id integer primary key autoincrement, question integer, text text, is_correct boolean)")
 
