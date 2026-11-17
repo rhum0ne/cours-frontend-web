@@ -1,8 +1,12 @@
 import sqlite3
+from pathlib import Path
 
 
 def reset_database():
     path = "database.db"
+    
+    Path(path).touch(exist_ok=True) # create the file if it doesn't exist
+    
     db_connection = sqlite3.connect(path)
     cur = db_connection.cursor()
 
