@@ -5,6 +5,7 @@ from flask import Flask, request
 import hashlib
 from jwt_utils import build_token
 from question import Question
+from database import reset_database
 
 app = Flask(__name__)
 CORS(app)
@@ -49,6 +50,16 @@ def create_question():
 	question.save_to_db()
  
 	return {"message": "Question created successfully"}, 201
+
+@app.route('/rebuild-db', methods=['POST'])
+def RebuildDB():
+	auth = request.headers.get('Authorization')
+ 
+	if not auth:
+		return {"message": "Unauthorized"}, 401
+    
+	reset_database()
+	return {"message": "Database rebuilt successfully"}, 200
 
 if __name__ == "__main__":
     app.run()

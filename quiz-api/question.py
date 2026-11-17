@@ -1,3 +1,5 @@
+from database import get_connection
+
 class Question():
     
     def __init__(self, title: str, position: int):
@@ -9,14 +11,7 @@ class Question():
         self.answers.append({"text": text, "isCorrect": is_correct})
         
     def save_to_db(self):
-        import sqlite3
-        # create a connection
-        path = "database.db"
-        db_connection = sqlite3.connect(path)
-
-        # set the sqlite connection in "manual transaction mode"
-        # (by default, all execute calls are performed in their own transactions, not what we want)
-        db_connection.isolation_level = None
+        db_connection = get_connection()
         cur = db_connection.cursor()
 
         # start transaction
