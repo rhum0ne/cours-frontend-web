@@ -2,11 +2,11 @@ from database import get_connection
 
 class Question():
     
-    def __init__(self, title: str, position: int, text: str, image: str, answers: list = [], id: int = None):
+    def __init__(self, title: str, position: int, text: str, image: str, answers: list = None, id: int = None):
         self.id = id
         self.title = title
         self.position = position
-        self.answers = answers
+        self.answers = answers if answers is not None else []
         self.text = text
         self.image = image
         

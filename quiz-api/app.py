@@ -31,10 +31,7 @@ def GetQuizInfo():
 
 @app.route('/questions/<int:id>', methods=['GET'])
 def GetQuestion(id):
-	auth = request.headers.get('Authorization')
-	 
-	if not auth:
-		return {"message": "Unauthorized"}, 401
+	# auth = request.headers.get('Authorization')
 
 	question = question_repository.find_by_id(id)
 
@@ -47,8 +44,13 @@ def GetQuestion(id):
 		"position": question.position,
 		"text": question.text,
 		"image": question.image,
-		"possibleAnswers": question.answers
+		"possibleAnswers": []
 	}
+	for answer in question.answers:
+		data["possibleAnswers"].append({
+			"text": answer['text'],
+			"isCorrect": bool(answer['isCorrect'])
+		})
 
 	return data, 200
 
@@ -75,14 +77,11 @@ def create_question():
  
 	question = Question(title=json['title'], position=json['position'], text=json['text'], image=json['image'])
 	for answer in json['possibleAnswers']:
-		question.add_answer(answer['text'], answer['isCorrect'])
- 
- 
-	question = question_repository.save(question)
+		question.add_answer(answer['text'], answer['isCorrect']) 
 
-	print(f"Question created with id: {question.id}")
+	q = question_repository.save(question)
 	return {
-		"id": question.id
+		"id": q.id
 		}, 200
 
 @app.route('/questions/<int:question_id>', methods=['PUT'])

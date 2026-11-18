@@ -45,7 +45,7 @@ class QuestionRepository:
         if not question_row:
             return None
         
-        question = Question(title=question_row[1], position=question_row[2], text=question_row[3], image=question_row[4])
+        question = Question(title=question_row[1], text=question_row[2], position=question_row[3], image=question_row[4], id=id)
         
         # get the answers for the question
         cur.execute(
