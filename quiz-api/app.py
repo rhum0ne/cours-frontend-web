@@ -108,8 +108,13 @@ def delete_all_questions():
  
 	if not auth:
 		return {"message": "Unauthorized"}, 401
+
+	try:
+		question_repository.delete_all()
+	except Exception as e:
+		return {"message": "Error deleting questions"}, 500
  
-	return {"message": "Not implemented"}, 501
+	return {"message": "All questions deleted"}, 204
 
 @app.route('/participations/all', methods=['DELETE'])
 def delete_all_participations():
@@ -145,7 +150,7 @@ def RebuildDB():
 		return {"message": "Unauthorized"}, 401
     
 	reset_database()
-	return {"message": "Database rebuilt successfully"}, 200
+	return 'Ok', 200
 
 if __name__ == "__main__":
     app.run()

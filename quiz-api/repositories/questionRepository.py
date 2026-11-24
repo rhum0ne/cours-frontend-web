@@ -57,3 +57,10 @@ class QuestionRepository:
             question.add_answer(answer_row[2], answer_row[3])
         
         return question
+
+    def delete_all(self):
+        cn = get_connection()
+        cur = cn.cursor()
+
+        cur.execute("DELETE FROM Questions")
+        cn.commit()
